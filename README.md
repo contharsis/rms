@@ -1,4 +1,5 @@
-# rms[
+# rms
+
 run minecraft server. server configs management tool    
 
 # commands
