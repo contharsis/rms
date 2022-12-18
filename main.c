@@ -83,7 +83,7 @@ void print_usage() {
 }
 
 void open_db(char *dir, char *name) {
-	int size = strlen(dir) + strlen(name) + 1;
+	size_t size = strlen(dir) + strlen(name) + 1;
 	char path[size];
 
 	strcpy(path, "");
