@@ -67,8 +67,7 @@ void check_err_exec(char *sql_err_msg) {
 }
 
 void print_usage() {
-	fprintf(stderr, "usage: rms <argument>\n");
-	fprintf(stderr, "arguments:\n");
+	fprintf(stderr, "usage: rms <argument>\narguments:\n");
 	
 	for(int i = 0; i < arg_count; i++) {
 		fprintf(stderr, "\t%s\n", arg[i]);
@@ -85,7 +84,6 @@ void print_usage() {
 
 void open_db(char *dir, char *name) {
 	char *path = calloc((strlen(dir) + strlen(name) + 1), sizeof(char));
-
 	rc = sqlite3_open(path, &db);
 	free(path);
 	check_err(err_cod);
@@ -94,9 +92,9 @@ void open_db(char *dir, char *name) {
 void close_db() {
 	rc = sqlite3_close(db);
 	check_err(err_ccd);
-	
 	exit(0);	
 }
+
 
 int main(int argc, char **argv) {	
 	if(argc == 1) {
@@ -110,5 +108,6 @@ int main(int argc, char **argv) {
 	printf("%s\n", argv[1]);
 
 	close_db();
+	
 	return 0;
 }

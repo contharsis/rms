@@ -6,7 +6,7 @@ mem: compile
 
 compile: main.c
 	clear
-	gcc -Wall -Wextra -Werror -pedantic -pedantic-errors main.c -lsqlite3 -o rms
+	gcc -Wall -Wextra -Werror -pedantic -pedantic-errors -g -Og main.c -lsqlite3 -o rms
 
 clean:
 	rm rms
