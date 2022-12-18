@@ -10,6 +10,7 @@
 sqlite3 *db;
 int rc;
 int arg_count = 9;
+int arg_arg_count[] = {1, 1, 0, 1, 1, 1, 1, 0, 0};
 int opt_count[] = {4, 5, 0, 0, 0, 0, 0, 0, 0};
 
 char *err_msg[] = {
@@ -19,31 +20,166 @@ char *err_msg[] = {
 };
 
 char *arg[] = {
-	"init <arguments> - initialize database, table and config",
-	"add <arguments> - add modpack to database",
-	"list - list all modpacks",
-	"show <modpack> - show all parameters of modpack",
-	"start <modpack> - start modpack server",
-	"stop <modpack> - stop running modpack",
-	"remove <modpack> - remove modpack from database",
-	"reset - restore all configs to default and clear modpack database",
-	"help - display this message"
+	"init",
+	"add",
+	"list",
+	"show",
+	"start",
+	"stop",
+	"remove",
+	"reset",
+	"help"
 };
 
-char **opt[] = {
+char **arg_arg[] = {
 	(char *[]) {
-		"-dd, --databasedirectory <absolute path> - edit database directory, default - ./", 
-		"-dn, --databasename <name> - edit name of database, default - modpacks", 
-		"-tn, --tablename <name> - edit name of table with modpacks, default - modpack", 
-		"-md, --modpacksdirectory <absolute path> - edit modpacks directory, default - ./modpacks"
+		"<options>"
 	},
 	(char *[]) {
-		"-n, --name <name> - set modpack name", 
-		"-d, --directory <absolute path> - edit modpack directory", 
-		"-j, --jar <jar, file name> - set jar file", "-p, --parameters <parameters> - set jvm parameters", 
-		"-p, --parameters <parameters> - set jvm parameters",
-		"-j, --javaversion <absolute path to /bin> edit java version, default - java from PATH"
-	}
+		"<options>"
+	},
+	(char *[]) {""},
+	(char *[]) {
+		"<modpack>"
+	},
+	(char *[]) {
+		"<modpack>"
+	},
+	(char *[]) {
+		"<modpack>"
+	},
+	(char *[]) {
+		"<modpack>"
+	},
+	(char *[]) {""},
+	(char *[]) {""}
+};
+
+char *arg_desc[] = {
+	"initialize database, table and config",
+	"add modpack to database",
+	"list all modpacks",
+	"show all parameters of modpack",
+	"start modpack server",
+	"stop running modpack",
+	"remove modpack from database",
+	"restore all configs to default and clear modpack database",
+	"display this message",
+};
+
+char **opt_short[] = {
+	(char *[]) {
+		"-dd",
+		"-dn",
+		"-tn",
+		"-md"
+	},
+	(char *[]) {
+		"-n",
+		"-d",
+		"-j",
+		"-p",
+		"-jv"
+	},
+	(char *[]) {""},
+	(char *[]) {""},
+	(char *[]) {""},
+	(char *[]) {""},
+	(char *[]) {""},
+	(char *[]) {""},
+	(char *[]) {""}
+};
+
+char **opt_long[] = {
+	(char *[]) {
+		"--databasedirectory",
+		"--databasename",
+		"--tablename",
+		"--modpacksdirectory"
+	},
+	(char *[]) {
+		"--name",
+		"--directory",
+		"--jar",
+		"--parameters",
+		"--javaversion"
+	},
+	(char *[]) {""},
+	(char *[]) {""},
+	(char *[]) {""},
+	(char *[]) {""},
+	(char *[]) {""},
+	(char *[]) {""},
+	(char *[]) {""}
+};
+
+char **opt_arg[] = {
+	(char *[]) {
+		"<absolute path>",
+		"<name>",
+		"<name>",
+		"<absolute path>"
+	},
+	(char *[]) {
+		"<name>",
+		"<absolute path>",
+		"<file name>",
+		"<parameters>",
+		"<absolute path to /bin>"
+	},
+	(char *[]) {""},
+	(char *[]) {""},
+	(char *[]) {""},
+	(char *[]) {""},
+	(char *[]) {""},
+	(char *[]) {""},
+	(char *[]) {""},
+};
+
+char **opt_default[] = {
+	(char *[]) {
+		"./",
+		"modpacks",
+		"modpack",
+		"./modpacks"
+	},
+	(char *[]) {
+		"",
+		"",
+		"",
+		"",
+		"java from PATH"
+	},
+	(char *[]) {""},
+	(char *[]) {""},
+	(char *[]) {""},
+	(char *[]) {""},
+	(char *[]) {""},
+	(char *[]) {""},
+	(char *[]) {""}
+};
+
+char **opt_desc[] = {
+        (char *[]) {
+                "edit database directory",
+                "edit name of database",
+                "edit name of table with modpacks",
+                "edit modpacks directory"
+        },
+        (char *[]) {
+                "set modpack name",
+                "edit modpack directory",
+                "set jar file",
+                "set jvm parameters",
+                "edit java version"
+        },
+        (char *[]) {""},
+        (char *[]) {""},
+        (char *[]) {""},
+        (char *[]) {""},
+        (char *[]) {""},
+        (char *[]) {""},
+        (char *[]) {""}
 };
 
 void print_err(int err_code) {
@@ -70,11 +206,31 @@ void print_usage() {
 	fprintf(stderr, "usage: rms <argument>\narguments:\n");
 	
 	for(int i = 0; i < arg_count; i++) {
-		fprintf(stderr, "\t%s\n", arg[i]);
+		fprintf(stderr, "\t%s", arg[i]);
 
-		for(int j = 0; j < opt_count[i]; j++) {
-			fprintf(stderr, "\t\t%s\n", opt[i][j]);
+		for(int j = 0; j < arg_arg_count[i]; j++) {
+			fprintf(stderr, " %s", arg_arg[i][j]);
 		}
+
+		fprintf(stderr, " - %s", arg_desc[i]);
+	
+		for(int j = 0; j < opt_count[i]; j++) {
+			if(j == 0) {
+				fprintf(stderr, "\n");
+			}
+
+			fprintf(stderr, "\t\t%s, %s %s - %s", opt_short[i][j], opt_long[i][j], opt_arg[i][j], opt_desc[i][j]);
+			
+			if(strcmp(opt_default[i][j], "")) {
+				fprintf(stderr, " - default - %s", opt_default[i][j]);	
+			}
+
+			if(j + 1 < opt_count[i]) {
+				fprintf(stderr, "\n");
+			}
+		}
+
+		fprintf(stderr, "\n");
 		
 		if(i + 1 < arg_count) {
 			fprintf(stderr, "\n");
