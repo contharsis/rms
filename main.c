@@ -69,8 +69,8 @@ void check_err_exec(char *sql_err_msg) {
 	}
 }
 
-void open_db(char *dir, char *name, sqlite3 *db) {
-	char *path = malloc((strlen(dir) + strlen(name) + 1) * sizeof(char));
+void open_db(char *dir, char *name) {
+	char *path = calloc((strlen(dir) + strlen(name) + 1), sizeof(char));
 
 	rc = sqlite3_open(path, &db);
 	check_err(err_cod, 0);
@@ -106,10 +106,10 @@ int main(int argc, char **argv) {
 	if(argc == 1) {
 		fprintf(stderr, "error: %s\n", err_msg[err_nea]);
 		print_usage();
-		close_db();
+		return 1;
 	}
 
-	open_db("./", "test.db", db);
+	open_db("./", "test.db");
 
 	printf("%s\n", argv[1]);
 
