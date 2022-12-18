@@ -11,6 +11,6 @@ compile: main.c
 compile_dbg: main.c
 	clear
 	gcc -Wall -Wextra -Werror -pedantic -pedantic-errors -g -Og main.c -lsqlite3 -o rms
-	
+
 clean:
 	rm rms

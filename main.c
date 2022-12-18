@@ -83,9 +83,14 @@ void print_usage() {
 }
 
 void open_db(char *dir, char *name) {
-	char *path = calloc((strlen(dir) + strlen(name) + 1), sizeof(char));
+	int size = strlen(dir) + strlen(name) + 1;
+	char path[size];
+
+	strcpy(path, "");
+	strcat(path, dir);
+	strcat(path, name);
+
 	rc = sqlite3_open(path, &db);
-	free(path);
 	check_err(err_cod);
 }
 
@@ -94,7 +99,6 @@ void close_db() {
 	check_err(err_ccd);
 	exit(0);	
 }
-
 
 int main(int argc, char **argv) {	
 	if(argc == 1) {
