@@ -5,7 +5,7 @@
 
 #define err_cod 0
 #define err_ccd 1
-#define err_nea 2 
+#define err_nea 2
 
 sqlite3 *db;
 int rc;
@@ -50,14 +50,11 @@ void print_err(int err_code) {
 	fprintf(stderr, "error: %s\n", err_msg[err_code]);
 }
 
-void check_err(int err_code, int stop) {
+void check_err(int err_code) {
 	if(rc) {
 		print_err(err_code);
 		fprintf(stderr, "error: %s\n", sqlite3_errmsg(db));
-		
-		if(stop) {
-			exit(1);
-		}
+		exit(1);
 	}
 }
 
@@ -90,14 +87,13 @@ void open_db(char *dir, char *name) {
 	char *path = calloc((strlen(dir) + strlen(name) + 1), sizeof(char));
 
 	rc = sqlite3_open(path, &db);
-	check_err(err_cod, 0);
-
 	free(path);
+	check_err(err_cod);
 }
 
 void close_db() {
 	rc = sqlite3_close(db);
-	check_err(err_ccd, 1);
+	check_err(err_ccd);
 	
 	exit(0);	
 }
