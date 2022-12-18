@@ -69,22 +69,6 @@ void check_err_exec(char *sql_err_msg) {
 	}
 }
 
-void open_db(char *dir, char *name) {
-	char *path = calloc((strlen(dir) + strlen(name) + 1), sizeof(char));
-
-	rc = sqlite3_open(path, &db);
-	check_err(err_cod, 0);
-
-	free(path);
-}
-
-void close_db() {
-	rc = sqlite3_close(db);
-	check_err(err_ccd, 1);
-	
-	exit(0);	
-}
-
 void print_usage() {
 	fprintf(stderr, "usage: rms <argument>\n");
 	fprintf(stderr, "arguments:\n");
@@ -100,6 +84,22 @@ void print_usage() {
 			fprintf(stderr, "\n");
 		}
 	}
+}
+
+void open_db(char *dir, char *name) {
+	char *path = calloc((strlen(dir) + strlen(name) + 1), sizeof(char));
+
+	rc = sqlite3_open(path, &db);
+	check_err(err_cod, 0);
+
+	free(path);
+}
+
+void close_db() {
+	rc = sqlite3_close(db);
+	check_err(err_ccd, 1);
+	
+	exit(0);	
 }
 
 int main(int argc, char **argv) {	
